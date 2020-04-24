@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { TypeInput } from './TypeInput';
 import './button.css';
 
@@ -6,15 +6,23 @@ function App() {
     const [started, setStarted] = useState(false);
     const [countDown, setCountDown] = useState(3);
     const [showCountDown, setShowCountDown] = useState(false);
+    const interval = useRef(null);
+
+    useEffect(() => {
+        if (countDown <= 0) {
+            clearInterval(interval.current);
+            setStarted(true);
+        }
+    }, [interval, countDown, setStarted]);
+
     const onStartHandler = () => {
         setShowCountDown(true);
-        setInterval(() => {
-            setCountDown((v) => {
-                if (v <= 0) setStarted(true);
-                return v - 1;
-            });
+        interval.current = setInterval(() => {
+            setCountDown((v) => v - 1);
         }, 1000);
     };
+
+    
     return (
         <main
             style={{
